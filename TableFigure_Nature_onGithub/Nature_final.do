@@ -3,7 +3,7 @@
 
 *** Generate Tables and figures of the article: Historical Analysis of National Subjective Wellbeing using Millions of Digitized Books, published on Nature Human Behaviour  
 
-**** Enter the path you save the folder "TableFigure_Nature" and run this do file. All tables and figures will be saved in the folder output.
+**** Enter the path you save the folder "TableFigure_Nature_onGithub" and run this do file. All tables and figures will be saved in the folder output.
 
 clear
 
@@ -13,7 +13,7 @@ set matsize 10000
 
 
 
-global path "YOURPATH"
+global path "/Users/eugenioproto/Dropbox/Valence/TableFigure_Nature_onGithub"
 
 use "$path/nature_valence.dta", clear
 
@@ -27,7 +27,7 @@ use "$path/nature_valence.dta", clear
 */ (scatter val_resC satislfe_resC if C == 1 & satislfe !=. , mcolor(blue)  )/*
 */(scatter val_resC satislfe_resC if C == 4 & satislfe !=. , mcolor(blue)) /*
 */(scatter val_resC satislfe_resC if C ==5 & satislfe !=. , mcolor(blue)), ylab(, nogrid)  /*
-*/ytitle("National Valence Index" ) xtitle("Survey-based Life Satisfaction") graphregion(color(white)) bgcolor(white) legend(off) note("correlation = 0.5508 (pvalue<0.01)") 
+*/ytitle("National Valence Index" ) xtitle("Survey-based Life Satisfaction") graphregion(color(white)) bgcolor(white) legend(off) note("") 
 graph save $path/output/val_ls.gph,  replace
 graph export $path/output/val_ls_scR.pdf,  replace
 
@@ -379,6 +379,16 @@ estout M2 M3 using    $path/output/val_ls_scR.tex,  replace style(tex)/*
 */posthead(\hline) prefoot( \\) postfoot("\hline" "\end{tabular}") 
 
 
+
+
+
+ 
+***************************/
+
+
+
+
+
 ******************************** Main text : 2nd Table: Historical determinant of valence - Table 2
 
 
@@ -425,7 +435,6 @@ estout M1 M2 M3 M4 using     $path/output/satlfe_p_scR.tex,  replace style(tex)/
 
 
 
-
 ***** Supplementary Material: Summary statistics-  Table A1
 
 
@@ -451,16 +460,36 @@ estout M1 M2 using    $path/output/Dval_Dls_scR.tex,  replace style(tex)/*
 */  mgroups("1" "2"  , pattern( 1 1)) /*
 */ mlabels(  "Year FE"  "Year FE+GDP" )  /*
 */ indicate(  "Year FE = *.year"   )/*
-*/cells( b(star fmt(%9.4f))  se(par fmt(%9.4f)) ) /*
+*/cells( b( star fmt(%9.4f))  se(par fmt(%9.4f)) p(par fmt(%9.4f)) ) /*
 */msign(--) starlevels(* .1 ** .05 *** .01) stardetach substitute(_ \_) stats(r2 N, fmt( %9.3f %9.0f))/*
 */ varlabels(D.valence "NVI(t)-NVI(t-1)" D.lgdp "Log GDP(t)-Log GDP(t-1)" lcount "Log Total Words" wcovered_valence "Words Covered" ) /* 
 */prehead("\begin{tabular} {l* {@M}{r @{} l}}" "\hline")/*
 */posthead(\hline) prefoot( \\) postfoot("\hline" "\end{tabular}") 
 
 
+***************************** SM: table Valence vs Life satisfaction: all variables are visible): Table A.3  *********************************************************************
+set more off
+xtreg satislfe valence lgdp i.year         if  C !=2 & C !=3 , fe cluster(C)
+estimates store M2
+xtreg satislfe valence lgdp italy_year germany_year uk_year       if  C !=2 & C !=3 , fe cluster(C)
+estimates store M3
 
 
-******************************** SM: Table: Historical determinant of valence (all variables are visible): Table A.3
+estout M2 M3 using    $path/output/val_ls_SM.tex,  replace style(tex)/*
+*/ keep( valence lgdp italy_year germany_year uk_year  )/* 
+*/ order(  valence lgdp italy_year germany_year uk_year  ) /*
+*/  mgroups("1" "2"  , pattern( 1 1)) /*
+*/ mlabels(  "Year FE"  "CS trends"  )  /*
+*/cells( b(star fmt(%9.4f))  se(par fmt(%9.4f)) p(par fmt(%9.4f)) ) /*
+*/msign(--) starlevels(* .1 ** .05 *** .01) stardetach substitute(_ \_) stats(r2 N, fmt( %9.3f %9.0f))/*
+*/ varlabels(valence "National Valence Index" lgdp "Log GDP" lcount "Log Total Words" wcovered_valence "Words Covered" italy_year "Italy Trend" /*
+*/germany_year "Germany Trend" uk_year "UK Trend" usa_year "USA Trend" ) /* 
+*/prehead("\begin{tabular} {l* {@M}{r @{} l}}" "\hline")/*
+*/posthead(\hline) prefoot( \\) postfoot("\hline" "\end{tabular}") 
+
+
+
+******************************** SM: Table: Historical determinant of valence (all variables are visible): Table A.4
 
 
 set more off
@@ -489,7 +518,7 @@ estout M1 M2 M3 M4 using     $path/output/satlfe_SMR.tex,  replace style(tex)/*
 */mgroups( "1"  "2" "3" "4", pattern( 1 1 1 1 )) /*
 */mlabels( "Year FE" "Year FE" "Year FE"  "CS Trends" "CS Trends + Conflicts" ) /*
 */ indicate( "Year FE =  _Iyear* " )/*
-*/cells( b(star fmt(%9.4f)) se(par fmt(%9.4f))) /*
+*/cells( b(star fmt(%9.4f)) se(par fmt(%9.4f)) p(par fmt(%9.4f))) /*
 */msign(--) starlevels(* .1 ** .05 *** .01) stardetach substitute(_ \_) stats(r2 N, fmt( %9.3f %9.0f))/*
 */ varlabels( life_exp1 "Life Expectancy(t-1) " lgdpM3 "(log) GDP(t-3)" lgdpM5 "(log) GDP(t-5)" in_confl_ex_ww "Other Internal Conflicts" in_confl1 "Internal Conflict(t-1)" ex_confl /*
 */ "External Conflict"/*
@@ -507,7 +536,7 @@ estout M1 M2 M3 M4 using     $path/output/satlfe_SMR.tex,  replace style(tex)/*
 ********* Supplentary Material Table Lagged Variables in the historical determinants of the valence -- 
 
 
-********************      Table A.4
+********************      Table A.5
 set more off
 
 xi i.year 
@@ -529,7 +558,7 @@ estout M1 M2 M3 M4 M5 using     $path/output/satlfe_p_llex_SMR.tex,  replace sty
 */ order(life_exp life_exp1 life_exp3 life_exp5 life_exp10  polity2 gini_edu wcovered_valence   ) /*
 */mgroups(  "1" "2" "3" "4" "5" , pattern(1 1 1 1 1)) /*
 */ indicate(  "Year FE = _Iy*"   )/*
-*/cells( b(star fmt(%9.4f)) se(par fmt(%9.4f))) /*
+*/cells( b(star fmt(%9.4f)) se(par fmt(%9.4f)) p(par fmt(%9.4f))) /*
 */msign(--) starlevels(* .1 ** .05 *** .01) stardetach substitute(_ \_) stats(r2 N, fmt( %9.3f %9.0f))/*
 */ varlabels( life_exp "Life Expectancy(t)" life_exp3 "Life Expectancy(t- 3)" life_exp1 "Life Expectancy(t- 1)" life_exp5 "Life Expectancy(t- 5)" life_exp10 "Life Expectancy(t- 10)"  /*
 */ lgdpM "(log) GDP(t)" lgdpM3 "(log) GDP(t-3)" lgdpM1 "(log) GDP(t-1)" in_confl_ex_ww "Internal Conflict$^{-}$" /*
@@ -546,7 +575,7 @@ set more off
 
 
 
-*** Table A.5 
+*** Table A.6 
 
 xi i.year
 xtreg valence  lgdpM polity2 gini_edu  wcovered_valence _Iy* if year>=1800 & C !=2 & C !=3, fe cluster(C)
@@ -567,7 +596,7 @@ estout M1 M2 M3 M4 M5 using     $path/output/satlfe_p_llgdp_SMR.tex,  replace st
 */ order( lgdpM lgdpM1 lgdpM3 lgdpM5 lgdpM10 polity2 gini_edu wcovered_valence   ) /*
 */mgroups(  "1" "2" "3" "4" "5", pattern(1 1 1 1 1)) /*
 */ indicate(  "Year FE = _Iy*"   )/*
-*/cells( b(star fmt(%9.4f)) se(par fmt(%9.4f))) /*
+*/cells( b(star fmt(%9.4f)) se(par fmt(%9.4f)) p(par fmt(%9.4f))) /*
 */msign(--) starlevels(* .1 ** .05 *** .01) stardetach substitute(_ \_) stats(r2 N, fmt( %9.3f %9.0f))/*
 */ varlabels( life_exp "Life Expectancy(t)" life_exp3 "Life Expectancy(t- 3)" life_exp1 "Life Expectancy(t- 1)" life_exp5 "Life Expectancy t- 5" /*
 */ lgdpM "(log) GDP(t)" lgdpM3 "(log) GDP(t-3)" lgdpM10 "(log) GDP(t-10)" lgdpM1 "(log) GDP(t-1)" lgdpM5 "(log) GDP(t-5)" in_confl_ex_ww "Internal Conflict$^{-}$" /*
@@ -582,7 +611,7 @@ estout M1 M2 M3 M4 M5 using     $path/output/satlfe_p_llgdp_SMR.tex,  replace st
 
 
 
-***** Table A.6 
+***** Table A.7 
 
 xtreg valence in_confl                                      wcovered_valence  if C !=2 & C !=3, fe cluster(C)
 estimates store M1
@@ -599,7 +628,7 @@ estout M1 M2 M3 M4 M5 using     $path/output/satlfe_p_l1_SMR.tex,  replace style
 */ keep( in_confl in_confl1 in_confl3 in_confl5 in_confl10 wcovered_valence)/* 
 */ order(in_confl in_confl1 in_confl3 in_confl5 in_confl10 wcovered_valence) /*
 */mgroups(  "1" "2" "3" "4" "5" , pattern(1 1 1 1 1)) /*
-*/cells( b(star fmt(%9.4f)) se(par fmt(%9.4f))) /*
+*/cells( b(star fmt(%9.4f)) se(par fmt(%9.4f)) p(par fmt(%9.4f))) /*
 */msign(--) starlevels(* .1 ** .05 *** .01) stardetach substitute(_ \_) stats(r2 N, fmt( %9.3f %9.0f))/*
 */ varlabels( life_exp "Life Expectancy " lgdpM3 "GDP (log)" in_confl3 "Internal Conflict(t-3)"/*
 */ in_confl2 "Internal Conflict(t-2)" in_confl "Internal Conflict(t)" in_confl1 "Internal Conflict(t-1)" in_confl5 "Internal Conflict(t-5)"  in_confl10 "Internal Conflict(t-10)"   ex_confl "External Conflict t"/*
@@ -620,7 +649,7 @@ estout M1 M2 M3 M4 M5 using     $path/output/satlfe_p_l1_SMR.tex,  replace style
 
 *********** ******************************** SM: Table: Historical determinant of valence Robustness check (all variables are visible)  -- 
 
-**** Table A.8 
+**** Table A.9 
 set more off
 xi i.year
 
@@ -647,7 +676,7 @@ estout M1 M2 M3 M4 using     $path/output/satlfe_max_diff_50.tex,  replace style
 */mgroups( "1"  "2" "3" "4", pattern( 1 1 1 1 )) /*
 */mlabels( "Year FE" "Year FE" "Year FE"  "CS Trends" "CS Trends + Conflicts" ) /*
 */ indicate( "Year FE =  _Iyear* " )/*
-*/cells( b(star fmt(%9.4f)) se(par fmt(%9.4f))) /*
+*/cells( b(star fmt(%9.4f)) se(par fmt(%9.4f)) p(par fmt(%9.4f))) /*
 */msign(--) starlevels(* .1 ** .05 *** .01) stardetach substitute(_ \_) stats(r2 N, fmt( %9.3f %9.0f))/*
 */ varlabels( life_exp1 "Life Expectancy(t-1) " lgdpM5 "(log) GDP(t-5)" in_confl_ex_ww "Other Internal Conflicts" in_confl1 "Internal Conflict(t-1)" ex_confl /*
 */ "External Conflict"/*
@@ -664,7 +693,7 @@ estout M1 M2 M3 M4 using     $path/output/satlfe_max_diff_50.tex,  replace style
 
 
 
-******  --- Table A.9
+******  --- Table A.10
 
 
 
@@ -699,7 +728,7 @@ estout M1 M2 M3 M4 using     $path/output/satlfe_max_diff_25.tex,  replace style
 */mgroups( "1"  "2" "3" "4", pattern( 1 1 1 1 )) /*
 */mlabels( "Year FE" "Year FE" "Year FE"  "CS Trends" "CS Trends + Conflicts" ) /*
 */ indicate( "Year FE =  _Iyear* " )/*
-*/cells( b(star fmt(%9.4f)) se(par fmt(%9.4f))) /*
+*/cells( b(star fmt(%9.4f)) se(par fmt(%9.4f)) p(par fmt(%9.4f))) /*
 */msign(--) starlevels(* .1 ** .05 *** .01) stardetach substitute(_ \_) stats(r2 N, fmt( %9.3f %9.0f))/*
 */ varlabels( life_exp1 "Life Expectancy(t-1) " lgdpM5 "(log) GDP(t-5)" in_confl_ex_ww "Other Internal Conflicts" in_confl1 "Internal Conflict(t-1)" ex_confl /*
 */ "External Conflict"/*
@@ -717,7 +746,7 @@ estout M1 M2 M3 M4 using     $path/output/satlfe_max_diff_25.tex,  replace style
 
 
 
-**** Table A.10
+**** Table A.11
 
 set more off
 xi i.year
@@ -745,7 +774,7 @@ estout M1 M2 M3 M4 using     $path/output/satlfe_mean_diff_50.tex,  replace styl
 */mgroups( "1"  "2" "3" "4", pattern( 1 1 1 1 )) /*
 */mlabels( "Year FE" "Year FE" "Year FE"  "CS Trends" "CS Trends + Conflicts" ) /*
 */ indicate( "Year FE =  _Iyear* " )/*
-*/cells( b(star fmt(%9.4f)) se(par fmt(%9.4f))) /*
+*/cells( b(star fmt(%9.4f)) se(par fmt(%9.4f))  p(par fmt(%9.4f))) /*
 */msign(--) starlevels(* .1 ** .05 *** .01) stardetach substitute(_ \_) stats(r2 N, fmt( %9.3f %9.0f))/*
 */ varlabels( life_exp1 "Life Expectancy(t-1) " lgdpM5 "(log) GDP(t-5)" in_confl_ex_ww "Other Internal Conflicts" in_confl1 "Internal Conflict(t-1)" ex_confl /*
 */ "External Conflict"/*
@@ -761,7 +790,7 @@ estout M1 M2 M3 M4 using     $path/output/satlfe_mean_diff_50.tex,  replace styl
 
 
 
-*** ALTERNATIVE MEASURE OF VALENCE (using the valence of teh co-occurring words) Table A.11
+*** ALTERNATIVE MEASURE OF VALENCE (using the valence of teh co-occurring words) Table A.12
 
 
 set more off
@@ -793,7 +822,7 @@ estout M1 M2 M3 M4 using     $path/output/satlfe1_max_diff_50.tex,  replace styl
 */mgroups( "1"  "2" "3" "4", pattern( 1 1 1 1 )) /*
 */mlabels( "Year FE" "Year FE" "Year FE"  "CS Trends" "CS Trends + Conflicts" ) /*
 */ indicate( "Year FE =  _Iyear* " )/*
-*/cells( b(star fmt(%9.4f)) se(par fmt(%9.4f))) /*
+*/cells( b(star fmt(%9.4f)) se(par fmt(%9.4f)) p(par fmt(%9.4f))) /*
 */msign(--) starlevels(* .1 ** .05 *** .01) stardetach substitute(_ \_) stats(r2 N, fmt( %9.3f %9.0f))/*
 */ varlabels( life_exp1 "Life Expectancy(t-1) " lgdpM5 "(log) GDP(t-5)" in_confl_ex_ww "Other Internal Conflicts" in_confl1 "Internal Conflict(t-1)" ex_confl /*
 */ "External Conflict"/*
@@ -811,7 +840,7 @@ estout M1 M2 M3 M4 using     $path/output/satlfe1_max_diff_50.tex,  replace styl
 
 
 
-***** Find My Past Data and Google - Table A.12 
+***** Find My Past Data and Google - Table A.13 
 
  
 
@@ -825,7 +854,7 @@ estout M1 M2 M3 using     $path/output/valence_fmp.tex,  replace style(tex)/*
 */ order(lgdpM lgdpM5 ww1 ww2 wcovered_valence wcovered_valence_FMP ) /*
 */mgroups(  "1820-1950" "1820-1950", pattern(1 1)) /*
 */mlabels( "FindMyPast" "Google"  ) /*
-*/cells( b(star fmt(%9.4f)) se(par fmt(%9.4f))) /*
+*/cells( b(star fmt(%9.4f)) se(par fmt(%9.4f)) p(par fmt(%9.4f))) /*
 */msign(--) starlevels(* .1 ** .05 *** .01) stardetach substitute(_ \_) stats(r2 N, fmt( %9.3f %9.0f))/*
 */ varlabels( life_exp "Life Expectancy " life_exp1 "Life Expectancy t-1" lgdpM5 "GDP (log) t-5"  lgdpM "GDP (log) t" in_confl3 "Internal Conflict(t-3)"/*
 */ in_confl2 "Internal Conflict(t-2)" in_confl "Internal Conflict(t)" in_confl1 "Internal Conflict(t-1)" ex_confl "External Conflict t"/*
@@ -847,7 +876,7 @@ xi i.year
 
 
  
- **** Pleasantness  - Table A.13 
+ **** Pleasantness  - Table A.14 
  
 xtreg pleasantness_sentic lgdpM5                       wcovered_pleasantness polity2 gini_edu _Iyear_* if C !=2 & C !=3 & life_exp1 !=., fe cluster(C)
 estimates store M1
@@ -872,7 +901,7 @@ estout M1 M2 M3 M4 using     $path/output/pleasantness.tex,  replace style(tex)/
 */mgroups( "1"  "2" "3" "4", pattern( 1 1 1 1 )) /*
 */mlabels( "Year FE" "Year FE" "Year FE"  "CS Trends" "CS Trends + Conflicts" ) /*
 */ indicate( "Year FE =  _Iyear* " )/*
-*/cells( b(star fmt(%9.4f)) se(par fmt(%9.4f))) /*
+*/cells( b(star fmt(%9.4f)) se(par fmt(%9.4f)) p(par fmt(%9.4f))) /*
 */msign(--) starlevels(* .1 ** .05 *** .01) stardetach substitute(_ \_) stats(r2 N, fmt( %9.3f %9.0f))/*
 */ varlabels( life_exp1 "Life Expectancy(t-1) " lgdpM5 "(log) GDP(t-5)" in_confl_ex_ww "Other Internal Conflicts" in_confl1 "Internal Conflict(t-1)" ex_confl /*
 */ "External Conflict"/*
@@ -895,7 +924,7 @@ xi i.year
 
 
 
- **** Polarity  --- Table A.14
+ **** Polarity  --- Table A.15
 
  
  xtreg polarity_sentic lgdpM5                       wcovered_polarity polity2 gini_edu _Iyear_* if C !=2 & C !=3 & life_exp1 !=., fe cluster(C)
@@ -921,7 +950,7 @@ estout M1 M2 M3 M4 using     $path/output/polarity.tex,  replace style(tex)/*
 */mgroups( "1"  "2" "3" "4", pattern( 1 1 1 1 )) /*
 */mlabels( "Year FE" "Year FE" "Year FE"  "CS Trends" "CS Trends + Conflicts" ) /*
 */ indicate( "Year FE =  _Iyear* " )/*
-*/cells( b(star fmt(%9.4f)) se(par fmt(%9.4f))) /*
+*/cells( b(star fmt(%9.4f)) se(par fmt(%9.4f)) p(par fmt(%9.4f))) /*
 */msign(--) starlevels(* .1 ** .05 *** .01) stardetach substitute(_ \_) stats(r2 N, fmt( %9.3f %9.0f))/*
 */ varlabels( life_exp1 "Life Expectancy(t-1) " lgdpM5 "(log) GDP(t-5)" in_confl_ex_ww "Other Internal Conflicts" in_confl1 "Internal Conflict(t-1)" ex_confl /*
 */ "External Conflict"/*
@@ -938,7 +967,7 @@ estout M1 M2 M3 M4 using     $path/output/polarity.tex,  replace style(tex)/*
 
 
 
- **** Valence Afinn Only US and UK 
+**** Valence Afinn Only US and UK 
  
  
 set more off
@@ -966,7 +995,7 @@ estout M1 M2 M3 M4 using     $path/output/valence_afinn.tex,  replace style(tex)
 */mgroups( "1"  "2" "3" "4", pattern( 1 1 1 1 )) /*
 */mlabels( "Year FE" "Year FE" "Year FE"  "CS Trends" "CS Trends + Conflicts" ) /*
 */ indicate( "Year FE =  _Iyear* " )/*
-*/cells( b(star fmt(%9.4f)) se(par fmt(%9.4f))) /*
+*/cells( b(star fmt(%9.4f)) se(par fmt(%9.4f)) p(par fmt(%9.4f))) /*
 */msign(--) starlevels(* .1 ** .05 *** .01) stardetach substitute(_ \_) stats(r2 N, fmt( %9.3f %9.0f))/*
 */ varlabels( life_exp1 "Life Expectancy(t-1) " lgdpM5 "(log) GDP(t-5)" in_confl_ex_ww "Other Internal Conflicts" in_confl1 "Internal Conflict(t-1)" ex_confl /*
 */ "External Conflict"/*
@@ -1060,9 +1089,4 @@ cd $path/output
 graph combine bar_valence_all.gph  bar_valence_uk.gph bar_valence_ge.gph bar_valence_it.gph  , xcommon  
 
 graph export "$path/output/pos_neg_corr.pdf", replace
-
-
-
-
-
 
