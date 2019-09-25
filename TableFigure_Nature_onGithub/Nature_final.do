@@ -13,7 +13,7 @@ set matsize 10000
 
 
 
-global path "/Users/eugenioproto/Dropbox/Valence/TableFigure_Nature_onGithub"
+global path "YOUR PATH"
 
 use "$path/nature_valence.dta", clear
 
@@ -1024,6 +1024,7 @@ use "$path/words.dta", clear
 
 encode country, gen(C)
 
+   
 
 g positive = ( cor >0)
 g pos_sig = ( pvalue <0.05 & cor>0 )
